@@ -43,7 +43,7 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     passwort = db.Column(db.String)
 
-    sensors = db.relationship('sensor', secondary=sensor_permission, lazy='subquery',
+    sensors = db.relationship('Sensor', secondary=sensor_permission, lazy='subquery',
                            backref=db.backref('users', lazy=True))
 
     def __init__(self, username, password):

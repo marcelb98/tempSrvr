@@ -16,12 +16,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from flask import Flask
+from flask import Flask, redirect, url_for, render_template
 
 from flask_migrate import Migrate
 
 from config import Config
 import model
+from forms import RegistrationForm
+
 
 def create_app():
     app = Flask(__name__)
@@ -46,8 +48,14 @@ if __name__ == '__main__':
     app.run()
 
 @app.route('/')
-def hello_world():
+def home():
     return 'Hello World!'
 
+@app.route('/install')
+def install():
+    if len(model.User.query.all()) > 0:
+        return redirect(url_for('home'))
 
+    form = RegistrationForm()
+    return render_template('install/admin.html', form=form)
 

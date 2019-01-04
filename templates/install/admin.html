@@ -1,0 +1,13 @@
+{% extends '_base.html' %}
+{% block content %}
+<h1>Installation</h1>
+Register your first admin user:<br>
+<form action="" method="post">
+{{ form.csrf_token }}
+Username: {{ form.username }}<br>
+Password: {{ form.password }}<br>
+Password verification: {{ form.password_verify }}<br>
+<button type="submit">create</button>
+</form>
+
+{% endblock %}
