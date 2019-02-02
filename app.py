@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from flask import Flask, redirect, url_for, render_template
+from flask import Flask, redirect, url_for, render_template, request
 
 from flask_migrate import Migrate
 
@@ -51,11 +51,20 @@ if __name__ == '__main__':
 def home():
     return 'Hello World!'
 
-@app.route('/install')
+@app.route('/install', methods=['GET', 'POST'])
 def install():
     if len(model.User.query.all()) > 0:
         return redirect(url_for('home'))
 
-    form = RegistrationForm()
-    return render_template('install/admin.html', form=form)
+    form = RegistrationForm(request.form)
+
+    if request.method == 'POST' and form.validate():
+        # register user
+        admin = model.User(form.username.data, form.password.data)
+        admin.admin = True
+        model.db.session.add(admin)
+        model.db.session.commit()
+        return redirect(url_for('home'))
+    else:
+        return render_template('install/admin.html', form=form)
 
