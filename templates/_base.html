@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
     tempSrvr
-    Copyright (C) 2018  Marcel Beyer
+    Copyright (C) 2019  Marcel Beyer
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -19,13 +19,78 @@
     Take a look at https://github.com/marcelb98/tempSrvr
 -->
 <html>
-<head>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-</head>
-<body>
-{% block content %}{% endblock %}
+    <title>tempSrv</title>
 
-<hr>
-Find <a href="https://github.com/marcelb98/tempSrvr">tempSrvr on GitHub</a>
-</body>
+    <!-- Bootstrap core CSS -->
+    <link href="{{ url_for('static', filename = 'bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{{ url_for('static', filename = 'dashboard.css') }}" rel="stylesheet">
+  </head>
+
+  <body>
+    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+      <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">tempSrv</a>
+
+      <ul class="navbar-nav px-3">
+        <li class="nav-item text-nowrap">
+          <a class="nav-link" href="#">Sign out</a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <ul class="nav flex-column">
+              <li class="nav-item"><a class="nav-link"><span>.</span></a></li>
+              <li class="nav-item">
+                <a class="nav-link active" href="#">
+                  <span data-feather="home"></span>
+                  Home
+                </a>
+              </li>
+              {% for sensor in sensors %}
+                <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <span data-feather="bar-chart-2"></span>
+                  {{ sensor }}
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+
+
+          </div>
+        </nav>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+
+            {% block content %}{% endblock %}
+
+        </main>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="{{ url_for('static', filename = 'jquery-slim.min.js') }}"><\/script>')</script>
+    <script src="{{ url_for('static', filename = 'popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename = 'bootstrap.min.js') }}"></script>
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+    <script>
+      feather.replace()
+    </script>
+
+  </body>
 </html>
+

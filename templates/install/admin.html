@@ -1,5 +1,9 @@
-{% extends '_base.html' %}
-{% block content %}
+<!doctype html>
+<html>
+<head>
+    <title>tempSrv installation</title>
+</head>
+<body>
 <h1>Installation</h1>
 Register your first admin user:<br>
 <form action="" method="post">
@@ -10,4 +14,5 @@ Password verification: {{ form.password_verify }}{% if form.password_verify.erro
 <button type="submit">create</button>
 </form>
 
-{% endblock %}
+</body>
+</html>
