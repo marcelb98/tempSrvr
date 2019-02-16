@@ -69,6 +69,9 @@ class Sensor(db.Model):
     public = db.Column(db.Boolean, default=False) # defines if temperatures of this sensor are public
     api_key = db.Column(db.String, nullable=False)
 
+    def __str__(self):
+        return self.name
+
 class Value(db.Model):
     """
     The temperatures meassured.

@@ -22,6 +22,7 @@ from flask_migrate import Migrate
 
 from config import Config
 import model
+from model import Sensor
 from forms import RegistrationForm
 
 
@@ -49,11 +50,15 @@ if __name__ == '__main__':
 
 @app.context_processor
 def sensors():
-    return dict(sensors=['a'])
+    return dict(sensors=Sensor.query.filter_by(public=True).all())
 
 @app.route('/')
 def home():
     return render_template('index.html')
+
+@app.route('/sensor/<id>')
+def sensor(id:int):
+    return "Sensor {}".format(id)
 
 @app.route('/install', methods=['GET', 'POST'])
 def install():
