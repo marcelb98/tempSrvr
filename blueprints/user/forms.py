@@ -17,12 +17,22 @@
 """
 
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField, validators, BooleanField
+from wtforms import PasswordField, StringField, validators, BooleanField, HiddenField, ValidationError
 
 
 class LoginForm(FlaskForm):
     username = StringField('Username', [validators.Length(min=4, max=25)])
     password = PasswordField('Password', [validators.Length(min=5)])
+
+class NewPasswordForm(FlaskForm):
+    user = HiddenField()
+    password_old = PasswordField('Current password', [validators.Length(min=5)])
+    password = PasswordField('Password', [validators.Length(min=5)])
+    passwordv = PasswordField('Password verification', [validators.EqualTo('password', message='Passwords must match')])
+
+    def validate_password_old(form, field):
+        if form.user.data.check_password(field.data) is not True:
+            raise ValidationError('Password is not correct.')
 
 class NewUserForm(FlaskForm):
     username = StringField('Username', [validators.Length(min=4, max=25)])

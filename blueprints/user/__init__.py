@@ -17,11 +17,11 @@
 """
 
 from flask import Blueprint, render_template, flash, request, abort, redirect, url_for, Markup
-from flask_login import LoginManager, login_user, login_required, logout_user
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 import helpers
 from helpers import is_safe_url, require_admin
-from blueprints.user.forms import LoginForm, VerifyActionForm, NewUserForm
+from blueprints.user.forms import LoginForm, VerifyActionForm, NewUserForm, NewPasswordForm
 from model import User, db
 
 bp = Blueprint('user', __name__, url_prefix='/user')
@@ -57,10 +57,19 @@ def logout():
     flash('Successfully logged out.')
     return redirect(url_for('home'))
 
-@bp.route('/settings')
+@bp.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
-    return "settings"
+    form = NewPasswordForm()
+    form.user.data = current_user
+
+    if form.validate_on_submit():
+        current_user.setPassword(form.password.data)
+        db.session.add(current_user)
+        db.session.commit()
+        flash('Password changed successfully.','success')
+
+    return render_template('user/settings.html', form=form)
 
 @bp.route('/manage')
 @login_required
