@@ -1,0 +1,22 @@
+{% extends '_base.html' %}
+{% block content %}
+    <h1>Create new API-Key</h1>
+    <div class="row">
+        <div class="col-md-12">
+            You're about to create a new API-Key for the sensor {{ sensor.name }}.<br>
+            You'll have to set the API-Key on all clients of this sensor.<br>
+            Are you sure you want to do this?
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <form action="" method="post">
+                {{ form.csrf_token }}
+                {{ form.verify }} {{ form.verify.label }} {% if form.verify.errors %}
+                <span style="color:red;">{{ form.verify.errors[0] }}</span>{% endif %}
+                <button type="submit">go on!</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

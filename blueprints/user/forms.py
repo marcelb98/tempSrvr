@@ -39,6 +39,3 @@ class NewUserForm(FlaskForm):
     password = PasswordField('Password', [validators.Length(min=5)])
     passwordv = PasswordField('Password verification', [validators.EqualTo('password', message='Passwords must match')])
     admin = BooleanField('Admin')
-
-class VerifyActionForm(FlaskForm):
-    verify = BooleanField('yes', [validators.DataRequired()])

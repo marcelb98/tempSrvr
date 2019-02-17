@@ -15,15 +15,17 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
+
 from flask_wtf import FlaskForm
-from wtforms import Form, PasswordField, StringField, validators, BooleanField
+from wtforms import StringField, validators, BooleanField, ValidationError
+
+from model import Sensor
 
 
-class RegistrationForm(Form):
-    username = StringField('Username', [validators.Length(min=4, max=25)])
-    password = PasswordField('Password', [validators.Length(min=5)])
-    password_verify = PasswordField('Password verification',
-                                    [validators.EqualTo('password', message='Passwords must match')])
+class NewSensorForm(FlaskForm):
+    name = StringField('Name', [validators.Length(min=4, max=25)])
+    public = BooleanField('Public sensor?')
 
-class VerifyActionForm(FlaskForm):
-    verify = BooleanField('yes', [validators.DataRequired()])
+    def validate_name(form, field):
+        if Sensor.query.filter_by(name=field.data).count() > 0:
+            raise ValidationError("There's already a sensor with this name.")

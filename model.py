@@ -23,6 +23,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.hybrid import hybrid_property
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from helpers import gen_password
+
 db = SQLAlchemy()
 
 # helper table for User-Sensor many-to-many relationship
@@ -69,6 +71,11 @@ class Sensor(db.Model):
     name = db.Column(db.String, nullable=False)
     public = db.Column(db.Boolean, default=False) # defines if temperatures of this sensor are public
     api_key = db.Column(db.String, nullable=False)
+
+    def __init__(self, name:str, public:bool):
+        self.name = name
+        self.public = public
+        self.api_key = gen_password(30)
 
     def __str__(self):
         return self.name

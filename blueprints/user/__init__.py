@@ -21,7 +21,8 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 
 import helpers
 from helpers import is_safe_url, require_admin
-from blueprints.user.forms import LoginForm, VerifyActionForm, NewUserForm, NewPasswordForm
+from forms import VerifyActionForm
+from blueprints.user.forms import LoginForm, NewUserForm, NewPasswordForm
 from model import User, db
 
 bp = Blueprint('user', __name__, url_prefix='/user')

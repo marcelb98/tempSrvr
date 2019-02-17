@@ -83,6 +83,7 @@ def main_nav():
 
     # add admin stuff
     if current_user.is_authenticated and current_user.admin is True:
+        items.append(View(IconText('Manage sensors', 'radio'), 'sensor.manage'))
         items.append(View(IconText('Manage users','users'), 'user.manage'))
 
     # add stuff for logged in users
