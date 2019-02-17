@@ -17,7 +17,7 @@
                     <tr>
                         <td>{{ user.username }}</td>
                         <td>{% if user.admin %}&#10004;{% else %}&#10007;{% endif %}</td>
-                        <td>{{ user.sensors|length }}</td>
+                        <td>{{ sensors|length }}</td>
                         <td>
 
                             <a href="{{ url_for('user.password_reset', user=user.id) }}"
