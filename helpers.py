@@ -30,6 +30,27 @@ def require_admin(f):
 
     return decorator
 
+def require_sensor_permission(f):
+    """
+    Check if the current user (which may be logged in or not) has the permission to view data of this sensor.
+    This will be the case if a) the sensor is public or b) the user has been granted access to the sensor by an admin.
+
+    If the user has no permissions, a 403 error will be returned.
+    """
+
+    @functools.wraps(f)
+    def decorator(*args, **kwargs):
+        from model import Sensor
+        sensor = Sensor.query.get(kwargs['id'])
+        if sensor.public is True:
+            pass
+        else:
+            if current_user.is_authenticated is False or sensor not in current_user.sensors:
+                abort(403)
+        return f(*args, **kwargs)
+
+    return decorator
+
 
 def gen_password(len: int = 10):
     """

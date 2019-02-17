@@ -22,12 +22,13 @@ from flask_login import login_required
 import helpers
 from blueprints.sensor.forms import NewSensorForm
 from forms import VerifyActionForm, MultiCheckboxForm
-from helpers import require_admin
+from helpers import require_admin, require_sensor_permission
 from model import Sensor, db, User
 
 bp = Blueprint('sensor', __name__, url_prefix='/sensor')
 
 @bp.route('/<id>')
+@require_sensor_permission
 def show(id:int):
     return "Sensor {}".format(id)
 
