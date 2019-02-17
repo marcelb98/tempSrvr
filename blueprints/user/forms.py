@@ -17,10 +17,18 @@
 """
 
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField, validators
+from wtforms import PasswordField, StringField, validators, BooleanField
 
 
 class LoginForm(FlaskForm):
     username = StringField('Username', [validators.Length(min=4, max=25)])
     password = PasswordField('Password', [validators.Length(min=5)])
 
+class NewUserForm(FlaskForm):
+    username = StringField('Username', [validators.Length(min=4, max=25)])
+    password = PasswordField('Password', [validators.Length(min=5)])
+    passwordv = PasswordField('Password verification', [validators.EqualTo('password', message='Passwords must match')])
+    admin = BooleanField('Admin')
+
+class VerifyActionForm(FlaskForm):
+    verify = BooleanField('yes', [validators.DataRequired()])

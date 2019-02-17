@@ -1,0 +1,33 @@
+{% extends '_base.html' %}
+{% block content %}
+    <h1>Create new user</h1>
+    <div class="row">
+        <div class="col-md-12">
+            <form action="" method="post">
+                {{ form.csrf_token }}
+                <div class="form-group row">
+                  {{ form.username.label }}
+                  {{ form.username(class_="form-control") }}
+                  {% if form.username.errors %}<small class="form-text text-danger">{{ form.username.errors[0] }}</small>{% endif %}
+                </div>
+                <div class="form-group row">
+                  {{ form.password.label }}
+                  {{ form.password(class_="form-control") }}
+                  {% if form.password.errors %}<small class="form-text text-danger">{{ form.password.errors[0] }}</small>{% endif %}
+                </div>
+                <div class="form-group row">
+                  {{ form.passwordv.label }}
+                  {{ form.passwordv(class_="form-control") }}
+                  {% if form.passwordv.errors %}<small class="form-text text-danger">{{ form.passwordv.errors[0] }}</small>{% endif %}
+                </div>
+                <div class="form-group row">
+                  {{ form.admin.label }}
+                  {{ form.admin }}
+                  {% if form.admin.errors %}<small class="form-text text-danger">{{ form.admin.errors[0] }}</small>{% endif %}
+                </div>
+                <button type="submit" class="btn btn-primary">create user</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

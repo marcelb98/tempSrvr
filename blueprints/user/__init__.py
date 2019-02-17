@@ -16,12 +16,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from flask import Blueprint, render_template, flash, request, abort, redirect, url_for
+from flask import Blueprint, render_template, flash, request, abort, redirect, url_for, Markup
 from flask_login import LoginManager, login_user, login_required, logout_user
 
+import helpers
 from helpers import is_safe_url, require_admin
-from blueprints.user.forms import LoginForm
-from model import User
+from blueprints.user.forms import LoginForm, VerifyActionForm, NewUserForm
+from model import User, db
 
 bp = Blueprint('user', __name__, url_prefix='/user')
 
@@ -65,4 +66,59 @@ def settings():
 @login_required
 @require_admin
 def manage():
-    return "Manage users"
+    users = User.query.all()
+    return render_template('user/manage.html', users=users)
+
+@bp.route('/new', methods=['GET','POST'])
+@login_required
+@require_admin
+def new():
+    form = NewUserForm()
+
+    if form.validate_on_submit():
+        user = User(form.username.data, form.password.data)
+        if form.admin.data is True:
+            user.admin = True
+        db.session.add(user)
+        db.session.commit()
+        flash('User was created successfully.', 'success')
+        redirect(url_for('user.manage'))
+
+    return render_template('user/new.html', form=form)
+
+@bp.route('/manage/<user>/passwordreset', methods=['GET', 'POST'])
+@login_required
+@require_admin
+def password_reset(user:int):
+    user = User.query.get(user)
+
+    form = VerifyActionForm()
+
+    if form.validate_on_submit() and form.verify.data is True:
+        # reset password
+        password = helpers.gen_password()
+        user.setPassword(password)
+        db.session.add(user)
+        db.session.commit()
+        flash('Password for {} was changed successfully.'.format(user.username), 'success')
+        flash(Markup('The new password is: <tt>{}</tt>'.format(password)), 'info')
+        return redirect(url_for('user.manage'))
+
+    return render_template('user/password_reset.html', form=form, user=user)
+
+@bp.route('/manage/<user>/delete', methods=['GET', 'POST'])
+@login_required
+@require_admin
+def delete(user:int):
+    user = User.query.get(user)
+
+    form = VerifyActionForm()
+
+    if form.validate_on_submit() and form.verify.data is True:
+        # delete user
+        db.session.delete(user)
+        db.session.commit()
+        flash('{} was deleted successfully.'.format(user.username), 'success')
+        return redirect(url_for('user.manage'))
+
+    return render_template('user/delete.html', form=form, user=user)

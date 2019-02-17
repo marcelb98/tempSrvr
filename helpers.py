@@ -24,3 +24,14 @@ def require_admin(f):
         return f(*args, **kwargs)
 
     return decorator
+
+def gen_password(len:int=10):
+    """
+    Generate a random password.
+    :param len: Length of the password.
+    :return: The generated password
+    """
+
+    import random
+    import string
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=len))
