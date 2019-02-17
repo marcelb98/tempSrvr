@@ -22,6 +22,7 @@ from flask_login import current_user
 from flask_migrate import Migrate
 from flask_nav import Nav, register_renderer
 from flask_nav.elements import View, Navbar
+from sqlalchemy import and_
 
 from config import Config
 import model
@@ -80,6 +81,9 @@ def main_nav():
         items.append(View(IconText(sensor.name,'thermometer'), 'sensor.show', id=sensor.id))
 
     # add private sensors
+    if current_user.is_authenticated:
+        for sensor in Sensor.query.filter(Sensor.users.any(id=current_user.id)).all():
+           items.append(View(IconText(sensor.name, 'thermometer'), 'sensor.show', id=sensor.id))
 
     # add admin stuff
     if current_user.is_authenticated and current_user.admin is True:

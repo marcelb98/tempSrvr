@@ -1,0 +1,21 @@
+{% extends '_base.html' %}
+{% block content %}
+    <h1>User permissions</h1>
+    <div class="row">
+        <div class="col-md-12">
+            Decide which users are allowed to view the data collected by the sensor {{ sensor.name }}.<br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <form action="" method="post">
+                {{ form.csrf_token }}
+                {% for field in form %}{% if field.type != 'CSRFTokenField' %}
+                    {{ field }} {{ field.label }}<br>
+                {% endif %}{% endfor %}
+                <button type="submit" class="btn btn-primary">save</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

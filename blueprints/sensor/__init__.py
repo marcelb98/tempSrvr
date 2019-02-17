@@ -21,9 +21,9 @@ from flask_login import login_required
 
 import helpers
 from blueprints.sensor.forms import NewSensorForm
-from forms import VerifyActionForm
+from forms import VerifyActionForm, MultiCheckboxForm
 from helpers import require_admin
-from model import Sensor, db
+from model import Sensor, db, User
 
 bp = Blueprint('sensor', __name__, url_prefix='/sensor')
 
@@ -89,3 +89,44 @@ def delete(sensor:int):
         return redirect(url_for('sensor.manage'))
 
     return render_template('sensor/delete.html', form=form, sensor=sensor)
+
+@bp.route('/manage/<sensor>/users', methods=['GET', 'POST'])
+@login_required
+@require_admin
+def user_permissions(sensor:int):
+    from wtforms import BooleanField
+
+    sensor = Sensor.query.get(sensor)
+    if sensor.public:
+        flash('The selected sensor is a public sensor','info')
+        return redirect(url_for('sensor.manage'))
+
+    FieldList = [
+        #("Field-Name",BooleanField('Text')),
+    ]
+
+    users = User.query.all()
+    for user in users:
+        active = True if sensor in user.sensors else False
+        FieldList.append((str(user.id), BooleanField(user.username, default=active)))
+
+    class F(MultiCheckboxForm):
+        pass
+    for (name, field) in FieldList:
+        setattr(F, name, field)
+    form = F()
+
+    if form.validate_on_submit():
+        for user in users:
+            if form._fields[str(user.id)].data is True:
+                # user should have access
+                user.sensors.append(sensor)
+            elif sensor in user.sensors:
+                # users access has to be removed
+                user.sensors.remove(sensor)
+            db.session.add(user)
+        db.session.commit()
+        flash('Updated user permissions successfully.','success')
+        return redirect(url_for('sensor.manage'))
+
+    return render_template('sensor/user_permissions.html', form=form, sensor=sensor)

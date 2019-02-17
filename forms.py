@@ -27,3 +27,6 @@ class RegistrationForm(Form):
 
 class VerifyActionForm(FlaskForm):
     verify = BooleanField('yes', [validators.DataRequired()])
+
+class MultiCheckboxForm(FlaskForm):
+    pass
