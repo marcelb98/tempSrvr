@@ -30,7 +30,7 @@ from model import Sensor
 from forms import RegistrationForm
 from helpers import BootstrapNavRenderer, IconText
 
-from blueprints import sensor, user
+from blueprints import sensor, user, api
 from blueprints.user import login_manager
 
 nav = Nav()
@@ -45,6 +45,7 @@ def create_app():
 
     app.register_blueprint(sensor.bp)
     app.register_blueprint(user.bp)
+    app.register_blueprint(api.bp)
 
     register_renderer(app, 'bootstrap', BootstrapNavRenderer)
 

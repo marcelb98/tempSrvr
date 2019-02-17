@@ -83,6 +83,7 @@ class Sensor(db.Model):
 class Value(db.Model):
     """
     The temperatures meassured.
+    Times are saved in UTC.
     """
     __tablename__ = 'value'
     id = db.Column(db.Integer, primary_key=True)
@@ -90,7 +91,7 @@ class Value(db.Model):
     time = db.Column(db.DateTime, nullable=False)
     sensor_id = db.Column(db.Integer, db.ForeignKey('sensor.id'), nullable=False)
 
-    def __init__(self, sensor, temp):
+    def __init__(self, sensor, temp, time=None):
         self.sensor_id = sensor.id
-        self.time = datetime.datetime.now()
-        self.value = temp
+        self.time = datetime.datetime.utcnow() if time is None else time
+        self.temp = temp
