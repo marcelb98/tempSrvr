@@ -1,0 +1,11 @@
+{% extends '_base.html' %}
+{% block content %}
+<h1>Login</h1>
+<form action="" method="post">
+    {{ form.csrf_token }}
+    Username: {{ form.username }}{% if form.username.errors %}<span style="color:red;">{{ form.username.errors[0] }}</span>{% endif %}<br>
+    Password: {{ form.password }}{% if form.password.errors %}<span style="color:red;">{{ form.password.errors[0] }}</span>{% endif %}<br>
+    <button type="submit">login</button>
+</form>
+
+{% endblock %}

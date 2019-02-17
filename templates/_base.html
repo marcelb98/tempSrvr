@@ -38,7 +38,11 @@
 
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-          <a class="nav-link" href="#">Sign out</a>
+          {% if current_user.is_authenticated %}
+                <a class="nav-link" href="{{ url_for('user.logout') }}">Sign out</a>
+            {% else %}
+                <a class="nav-link" href="{{ url_for('user.login') }}">Sign in</a>
+            {% endif %}
         </li>
       </ul>
     </nav>
@@ -50,19 +54,36 @@
             <ul class="nav flex-column">
               <li class="nav-item"><a class="nav-link"><span>.</span></a></li>
               <li class="nav-item">
-                <a class="nav-link active" href="#">
+                <a class="nav-link active" href="{{ url_for('home') }}">
                   <span data-feather="home"></span>
                   Home
                 </a>
               </li>
               {% for sensor in sensors %}
                 <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('sensor', id=sensor.id) }}">
+                <a class="nav-link" href="{{ url_for('sensor.show', id=sensor.id) }}">
                   <span data-feather="bar-chart-2"></span>
                   {{ sensor }}
                 </a>
-              </li>
+                </li>
               {% endfor %}
+              {% if current_user.is_authenticated %}
+                {% if current_user.admin %}
+                    <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('user.manage') }}">
+                      <span data-feather="users"></span>
+                      Manage users
+                    </a>
+                    </li>
+                {% endif %}
+
+                <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('user.settings') }}">
+                  <span data-feather="settings"></span>
+                  Settings
+                </a>
+                </li>
+              {% endif %}
             </ul>
 
 
@@ -70,6 +91,19 @@
         </nav>
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert {% if category == 'message' %}alert-primary{% else %}alert-{{ category }}{% endif %} alert-dismissible fade show" role="alert">
+                      {{ message }}
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
 
             {% block content %}{% endblock %}
 

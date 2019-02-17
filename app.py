@@ -25,12 +25,20 @@ import model
 from model import Sensor
 from forms import RegistrationForm
 
+from blueprints import sensor, user
+from blueprints.user import login_manager
 
 def create_app():
     app = Flask(__name__)
     app.secret_key = Config.secret_key
     app.config['SQLALCHEMY_DATABASE_URI'] = Config.database_url
     app.app_context()
+
+    login_manager.init_app(app)
+
+    app.register_blueprint(sensor.bp)
+    app.register_blueprint(user.bp)
+
     return app
 
 app = create_app()
@@ -55,10 +63,6 @@ def sensors():
 @app.route('/')
 def home():
     return render_template('index.html')
-
-@app.route('/sensor/<id>')
-def sensor(id:int):
-    return "Sensor {}".format(id)
 
 @app.route('/install', methods=['GET', 'POST'])
 def install():

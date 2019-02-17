@@ -18,6 +18,7 @@
 
 import datetime
 
+from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.hybrid import hybrid_property
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -31,7 +32,7 @@ sensor_permission = db.Table('view_permission',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True)
 )
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     """
     Users which are using the system.
     Admins (admin=True) are allowed to manage the system (e.g. create sensors).
