@@ -15,22 +15,43 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
+import datetime
 
-from flask import Blueprint, render_template, flash, redirect, url_for
+from flask import Blueprint, render_template, flash, redirect, url_for, request, abort
 from flask_login import login_required
+from sqlalchemy import and_
 
 import helpers
-from blueprints.sensor.forms import NewSensorForm
+from blueprints.sensor.forms import NewSensorForm, ShowIntervalForm
 from forms import VerifyActionForm, MultiCheckboxForm
 from helpers import require_admin, require_sensor_permission
-from model import Sensor, db, User
+from model import Sensor, db, User, Value
 
 bp = Blueprint('sensor', __name__, url_prefix='/sensor')
 
+
 @bp.route('/<id>')
 @require_sensor_permission
-def show(id:int):
-    return "Sensor {}".format(id)
+def show(id: int):
+    sensor = Sensor.query.get(id)
+
+    form = ShowIntervalForm(request.args, csrf_enabled=False)
+    if form.start.data is None: form.start.data = datetime.datetime.utcnow() - datetime.timedelta(days=3)
+    if form.end.data is None: form.end.data = datetime.datetime.utcnow()
+
+    # newest temperature
+    temp = sensor.values.order_by(Value.time.desc()).first()
+
+    temps = sensor.values.order_by(Value.time.asc()).filter(
+        and_(Value.time >= form.start.data, Value.time <= form.end.data)).all()
+
+    values = {'xs': [], 'ys': []}
+    for temp in temps:
+        values['xs'].append(temp.time)
+        values['ys'].append(temp.temp)
+
+    return render_template('sensor/show.html', form=form, sensor=sensor, temp=temp, values=values)
+
 
 @bp.route('/manage')
 @login_required
@@ -38,6 +59,7 @@ def show(id:int):
 def manage():
     sensors = Sensor.query.all()
     return render_template('sensor/manage.html', sensors=sensors)
+
 
 @bp.route('/manage/new', methods=['GET', 'POST'])
 @login_required
@@ -50,15 +72,16 @@ def new():
         sensor = Sensor(form.name.data, form.public.data)
         db.session.add(sensor)
         db.session.commit()
-        flash('Sensor was created successfully.','success')
+        flash('Sensor was created successfully.', 'success')
         return redirect(url_for('sensor.manage'))
 
     return render_template('sensor/new.html', form=form)
 
+
 @bp.route('/manage/<sensor>/newKey', methods=['GET', 'POST'])
 @login_required
 @require_admin
-def new_key(sensor:int):
+def new_key(sensor: int):
     sensor = Sensor.query.get(sensor)
 
     form = VerifyActionForm()
@@ -74,10 +97,11 @@ def new_key(sensor:int):
 
     return render_template('sensor/new_key.html', form=form, sensor=sensor)
 
+
 @bp.route('/manage/<sensor>/delete', methods=['GET', 'POST'])
 @login_required
 @require_admin
-def delete(sensor:int):
+def delete(sensor: int):
     sensor = Sensor.query.get(sensor)
 
     form = VerifyActionForm()
@@ -91,19 +115,20 @@ def delete(sensor:int):
 
     return render_template('sensor/delete.html', form=form, sensor=sensor)
 
+
 @bp.route('/manage/<sensor>/users', methods=['GET', 'POST'])
 @login_required
 @require_admin
-def user_permissions(sensor:int):
+def user_permissions(sensor: int):
     from wtforms import BooleanField
 
     sensor = Sensor.query.get(sensor)
     if sensor.public:
-        flash('The selected sensor is a public sensor','info')
+        flash('The selected sensor is a public sensor', 'info')
         return redirect(url_for('sensor.manage'))
 
     FieldList = [
-        #("Field-Name",BooleanField('Text')),
+        # ("Field-Name",BooleanField('Text')),
     ]
 
     users = User.query.all()
@@ -113,6 +138,7 @@ def user_permissions(sensor:int):
 
     class F(MultiCheckboxForm):
         pass
+
     for (name, field) in FieldList:
         setattr(F, name, field)
     form = F()
@@ -127,7 +153,7 @@ def user_permissions(sensor:int):
                 user.sensors.remove(sensor)
             db.session.add(user)
         db.session.commit()
-        flash('Updated user permissions successfully.','success')
+        flash('Updated user permissions successfully.', 'success')
         return redirect(url_for('sensor.manage'))
 
     return render_template('sensor/user_permissions.html', form=form, sensor=sensor)

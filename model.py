@@ -72,6 +72,8 @@ class Sensor(db.Model):
     public = db.Column(db.Boolean, default=False) # defines if temperatures of this sensor are public
     api_key = db.Column(db.String, nullable=False)
 
+    values = db.relationship("Value", back_populates="sensor", lazy="dynamic")
+
     def __init__(self, name:str, public:bool):
         self.name = name
         self.public = public
@@ -90,6 +92,7 @@ class Value(db.Model):
     temp = db.Column(db.Float, nullable=False)
     time = db.Column(db.DateTime, nullable=False)
     sensor_id = db.Column(db.Integer, db.ForeignKey('sensor.id'), nullable=False)
+    sensor = db.relationship("Sensor", back_populates="values")
 
     def __init__(self, sensor, temp, time=None):
         self.sensor_id = sensor.id

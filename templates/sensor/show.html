@@ -1,0 +1,65 @@
+{% extends '_base.html' %}
+{% block content %}
+    <h1>{{ sensor.name }}</h1>
+    <div class="row">
+    <div class="card text-center col-md-4">
+      <div class="card-body">
+        <h3 class="card-title">{{ temp.temp }}&deg;C</h3>
+      </div>
+      <div class="card-footer text-muted">
+        {{ temp.time }} (UTC)
+      </div>
+    </div>
+    <div class="col-md-8">
+        <form action="" method="get">
+            {{ form.start.label }} {{ form.start }}<br>
+            {{ form.end.label }} {{ form.end }}<br>
+            <button type="submit" class="btn btn-primary">show</button>
+        </form>
+    </div>
+    </div>
+
+    <canvas class="my-4 w-100" id="chart" width="900" height="380"></canvas>
+
+
+{% endblock %}
+{% block extraBottom %}
+<script src="{{ url_for('static', filename='Chart.min.js') }}"></script>
+<script type="text/javascript">
+var ctx = document.getElementById('chart');
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [
+        {% for x in values['xs'] %}
+            '{{ x }}',
+        {% endfor %}
+      ],
+      datasets: [{
+        data: [
+          {% for y in values['ys'] %}
+            '{{ y }}',
+          {% endfor %}
+        ],
+        lineTension: 0,
+        backgroundColor: 'transparent',
+        borderColor: '#007bff',
+        borderWidth: 4,
+        pointBackgroundColor: '#007bff'
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: false
+          }
+        }]
+      },
+      legend: {
+        display: false
+      }
+    }
+  });
+</script>
+{% endblock %}

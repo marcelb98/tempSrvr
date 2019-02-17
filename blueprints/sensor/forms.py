@@ -17,7 +17,7 @@
 """
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, validators, BooleanField, ValidationError
+from wtforms import StringField, validators, BooleanField, ValidationError, DateTimeField
 
 from model import Sensor
 
@@ -29,3 +29,7 @@ class NewSensorForm(FlaskForm):
     def validate_name(form, field):
         if Sensor.query.filter_by(name=field.data).count() > 0:
             raise ValidationError("There's already a sensor with this name.")
+
+class ShowIntervalForm(FlaskForm):
+    start = DateTimeField('Start', [validators.DataRequired()], format='%Y-%m-%d %H:%M:%S')
+    end = DateTimeField('End', [validators.DataRequired()], format='%Y-%m-%d %H:%M:%S')

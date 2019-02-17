@@ -42,6 +42,8 @@ def require_sensor_permission(f):
     def decorator(*args, **kwargs):
         from model import Sensor
         sensor = Sensor.query.get(kwargs['id'])
+        if sensor is None:
+            return abort(404)
         if sensor.public is True:
             pass
         else:
