@@ -50,41 +50,8 @@
     <div class="container-fluid">
       <div class="row">
         <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-          <div class="sidebar-sticky">
-            <ul class="nav flex-column">
-              <li class="nav-item"><a class="nav-link"><span>.</span></a></li>
-              <li class="nav-item">
-                <a class="nav-link active" href="{{ url_for('home') }}">
-                  <span data-feather="home"></span>
-                  Home
-                </a>
-              </li>
-              {% for sensor in sensors %}
-                <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('sensor.show', id=sensor.id) }}">
-                  <span data-feather="bar-chart-2"></span>
-                  {{ sensor }}
-                </a>
-                </li>
-              {% endfor %}
-              {% if current_user.is_authenticated %}
-                {% if current_user.admin %}
-                    <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('user.manage') }}">
-                      <span data-feather="users"></span>
-                      Manage users
-                    </a>
-                    </li>
-                {% endif %}
-
-                <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('user.settings') }}">
-                  <span data-feather="settings"></span>
-                  Settings
-                </a>
-                </li>
-              {% endif %}
-            </ul>
+          <div class="sidebar-sticky" style="padding-top:50px;">
+            {{ nav.main_nav.render(renderer='bootstrap') }}
 
 
           </div>

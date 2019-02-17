@@ -17,16 +17,22 @@
 """
 
 from flask import Flask, redirect, url_for, render_template, request
+from flask_login import current_user
 
 from flask_migrate import Migrate
+from flask_nav import Nav, register_renderer
+from flask_nav.elements import View, Navbar
 
 from config import Config
 import model
 from model import Sensor
 from forms import RegistrationForm
+from helpers import BootstrapNavRenderer, IconText
 
 from blueprints import sensor, user
 from blueprints.user import login_manager
+
+nav = Nav()
 
 def create_app():
     app = Flask(__name__)
@@ -39,10 +45,13 @@ def create_app():
     app.register_blueprint(sensor.bp)
     app.register_blueprint(user.bp)
 
+    register_renderer(app, 'bootstrap', BootstrapNavRenderer)
+
     return app
 
 app = create_app()
 app.app_context().push()
+nav.init_app(app)
 
 with app.app_context():
     model.db.init_app(app)
@@ -59,6 +68,28 @@ if __name__ == '__main__':
 @app.context_processor
 def sensors():
     return dict(sensors=Sensor.query.filter_by(public=True).all())
+
+@nav.navigation()
+def main_nav():
+    items = [
+        View(IconText('Home','home'), 'home')
+    ]
+
+    # add public sensors
+    for sensor in Sensor.query.filter_by(public=True).all():
+        items.append(View(IconText(sensor.name,'thermometer'), 'sensor.show', id=sensor.id))
+
+    # add private sensors
+
+    # add admin stuff
+    if current_user.is_authenticated and current_user.admin is True:
+        items.append(View(IconText('Manage users','users'), 'user.manage'))
+
+    # add stuff for logged in users
+    if current_user.is_authenticated:
+        items.append(View(IconText('Settings','settings'), 'user.settings'))
+
+    return Navbar('', *items)
 
 @app.route('/')
 def home():
