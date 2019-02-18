@@ -9,6 +9,7 @@
             <br>
             <table border="1">
                 <tr>
+                    <th>ID</th>
                     <th>Name</th>
                     <th>Public</th>
                     <th>API-Key</th>
@@ -16,6 +17,7 @@
                 </tr>
                 {% for sensor in sensors %}
                     <tr>
+                        <td>{{ sensor.id }}</td>
                         <td>{{ sensor.name }}</td>
                         <td>{% if sensor.public %}&#10004;{% else %}&#10007;
                             (<a href="{{ url_for('sensor.user_permissions', sensor=sensor.id) }}">{{ sensor.users|length }}
