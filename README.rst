@@ -7,4 +7,5 @@ It's possible to declare sensors as public, so that everybody can see the temper
 All other sensors are limited to a specified set of users. To see those temperatures the
 users have to log in.
 
-New temperatures are submitted through the API.
+New temperatures are submitted through the API. If you're looking for a client,
+take a look at `piTemp <https://github.com/marcelb98/piTemp>`_.
