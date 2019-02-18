@@ -63,7 +63,10 @@ def gen_password(len: int = 10):
 
     import random
     import string
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=len))
+    choices = []
+    for i in range(0,len):
+        choices.append(random.choice(string.ascii_letters + string.digits))
+    return ''.join(choices)
 
 
 class IconText():
