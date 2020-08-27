@@ -50,7 +50,9 @@ def show():
     try:
         time = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
     except ValueError:
-        return abort(400)
+        # the client was not able to submit a valid time and filled the field
+        # with nonce to protect the signature
+        time = datetime.now()
 
     try:
         temp = float(temp)
