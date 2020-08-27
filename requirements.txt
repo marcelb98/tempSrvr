@@ -11,7 +11,7 @@ python-dateutil==2.7.5
 python-editor==1.0.3
 six==1.12.0
 SQLAlchemy==1.2.15
-Werkzeug==0.14.1
+Werkzeug==0.15.3
 WTForms==2.2.1
 Flask-Login==0.4.1
 flask-nav==0.6
