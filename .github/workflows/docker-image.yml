@@ -23,7 +23,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GH_REGISTRY_SECRET }}
 
-    - name: Build the hello-world Docker image
+    - name: Build+publish Docker image
       run: |
         docker build --tag ghcr.io/marcelb98/tempsrvr:latest .
         docker push ghcr.io/marcelb98/tempsrvr:latest
