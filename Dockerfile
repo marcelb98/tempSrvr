@@ -1,6 +1,7 @@
 FROM debian:stable-slim
 
 MAINTAINER Marcel Beyer "marcel.beyer@it-maker.eu"
+LABEL org.opencontainers.image.source="https://github.com/marcelb98/tempSrvr"
 
 RUN apt-get update -y && \
     apt-get install -y python3 python3-pip python3-dev
