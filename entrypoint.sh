@@ -9,7 +9,7 @@
 # TEMPSRV_URL		''		The URL prefix flask should use for URL generation
 #
 
-python manage.py db upgrade
+python3 manage.py db upgrade
 
 if [[ -z "${TEMPSRV_PORT}" ]]; then
   TEMPSRV_PORT="5000"
