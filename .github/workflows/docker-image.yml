@@ -25,6 +25,6 @@ jobs:
 
     - name: Build the hello-world Docker image
       run: |
-        docker build . --tag tempSrvr:latest
-        docker run tempSrvr:latest
-        docker push tempSrvr:latest
+        docker build --tag ghcr.io/marcelb98/tempsrvr:latest .
+        docker run ghcr.io/marcelb98/tempsrvr:latest
+        docker push ghcr.io/marcelb98/tempsrvr:latest
