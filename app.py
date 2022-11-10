@@ -16,6 +16,18 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+import os
+if os.getenv('CONFIGFILE') is not None:
+    import importlib.util
+    import sys
+    spec = importlib.util.spec_from_file_location("Config", os.getenv('CONFIGFILE'))
+    config = importlib.util.module_from_spec(spec)
+    sys.modules["config"] = config
+    spec.loader.exec_module(config)
+    Config = config.Config
+else:
+    from config import Config
+
 from flask import Flask, redirect, url_for, render_template, request
 from flask_login import current_user
 
@@ -24,7 +36,7 @@ from flask_nav import Nav, register_renderer
 from flask_nav.elements import View, Navbar
 from sqlalchemy import and_
 
-from config import Config
+#from config import Config
 import model
 from model import Sensor
 from forms import RegistrationForm

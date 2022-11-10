@@ -9,3 +9,9 @@ users have to log in.
 
 New temperatures are submitted through the API. If you're looking for a client,
 take a look at `piTemp <https://github.com/marcelb98/piTemp>`_.
+
+Config
+------
+By default config is read from the `config.py` in the projects main directory.
+If the environment variable `CONFIGFILE` is provided, the config file will be read from the path stated in this variable.
+
